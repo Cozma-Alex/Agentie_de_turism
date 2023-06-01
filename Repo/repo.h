@@ -103,7 +103,7 @@ ostream& operator<<(ostream& out, const RepoException& ex);
 class Repo_Offer_file: public Repo_Offer_memory{
     string file = "..//file.csv";
 
-    void load_from_file(string& file_input,const string& type_of_load);
+    void load_from_file(string& file_input);
 
     void save_to_file(string& file_output);
 
@@ -113,14 +113,14 @@ public:
     /// adaugare in lista all noua activitate
     /// \param a - const Offer&
     void add(const Offer& a) override{
-        load_from_file(file,"normal");
+        load_from_file(file);
         Repo_Offer_memory::add(a);
         save_to_file(file);
     }
     /// stergere din lista all activitatea de pe pozitia pos
     /// \param pos - int
     void remove(int pos) override{
-        load_from_file(file,"normal");
+        load_from_file(file);
         Repo_Offer_memory::remove(pos);
         save_to_file(file);
     }
@@ -129,18 +129,18 @@ public:
     /// \param a - const Offer&
     /// \param pos - int
     void update(const Offer& a, int pos) override{
-        load_from_file(file,"normal");
+        load_from_file(file);
         Repo_Offer_memory::update(a, pos);
         save_to_file(file);
     }
 
     const Offer & find(const string& name) override{
-        load_from_file(file,"normal");
+        load_from_file(file);
         return Repo_Offer_memory::find(name);
     }
 
     vector<Offer> getAll()noexcept override{
-        load_from_file(file,"normal");
+        load_from_file(file);
         return Repo_Offer_memory::getAll();
     }
 
@@ -157,7 +157,7 @@ public:
     }
 
     int find_pos(const string& name) override{
-        load_from_file(file,"normal");
+        load_from_file(file);
         return Repo_Offer_memory::find_pos(name);
     }
 
@@ -166,7 +166,7 @@ public:
     }
 
     void replace(vector<Offer> offer) override{
-        load_from_file(file,"normal");
+        load_from_file(file);
         Repo_Offer_memory::replace(offer);
         save_to_file(file);
     }

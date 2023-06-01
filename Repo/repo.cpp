@@ -84,11 +84,8 @@ ostream& operator<<(ostream& out, const RepoException& ex){
     return out;
 }
 
-void Repo_Offer_file::load_from_file(string &file_input,const string& type_of_load) {
-    if(type_of_load == "normal")
-        Repo_Offer_memory::clear_all();
-    if(type_of_load == "wishlist")
-        Repo_Offer_memory::clear();
+void Repo_Offer_file::load_from_file(string &file_input) {
+    Repo_Offer_memory::clear_all();
     std::ifstream in(file_input);
     string line;
     while(getline(in,line))
@@ -106,10 +103,7 @@ void Repo_Offer_file::load_from_file(string &file_input,const string& type_of_lo
         string price=str[3];
 
         Offer o{name, destination, type, price};
-        if(type_of_load == "normal")
-            Repo_Offer_memory::add(o);
-        if(type_of_load == "wishlist")
-            Repo_Offer_memory::add_wishlist(o);
+        Repo_Offer_memory::add(o);
     }
     in.close();
 }
