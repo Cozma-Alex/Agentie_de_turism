@@ -36,7 +36,9 @@ void Offer_ui::initGuiCmps(QWidget *widget) {
 
     this->restart(this->service.getAll());
 
-    this->restart_wishlist(this->service.getAllWishlist());
+    vector<Offer> f;
+
+    this->restart_wishlist(f);
 
     this->connect();
 
@@ -610,7 +612,7 @@ void Offer_ui::table_wishlist_define() {
         table_wishlist->setItem(i, 3, item_price);
     }
     table_wishlist->setColumnWidth(0,200);
-    table_wishlist->setColumnWidth(1,200);
+    table_wishlist->setColumnWidth(1,250);
     table_wishlist->setColumnWidth(2,200);
     table_wishlist->setColumnWidth(3,200);
 }

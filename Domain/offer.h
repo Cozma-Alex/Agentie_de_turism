@@ -39,7 +39,7 @@ public:
     }
 
     string to_string() const{
-        return name + " " + destination + " " + type + " " + price;
+        return name + "," + destination + "," + type + "," + price;
     }
 
     ~Offer(){

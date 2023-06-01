@@ -213,7 +213,7 @@ void Tests::test_export() {
 
     string Basic;
     getline(in2, Basic);
-    assert(Basic == "aaa rrr qqq 9");
+    assert(Basic == "aaa,rrr,qqq,9");
 
     in2.close();
     service.remove_offer("aaa");

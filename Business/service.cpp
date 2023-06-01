@@ -102,7 +102,13 @@ void ServiceOffer::add_to_wishlist(const string &name) {
 }
 
 void ServiceOffer::generate_wishlist(int nr) {
+    repo->clear();
     vector<Offer> offers = getAll();
+    if(nr>offers.size())
+    {
+        repo->add_all_to_wishlist();
+        nr-=offers.size();
+    }
     auto seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::shuffle(offers.begin(), offers.end(), std::default_random_engine(seed));
     while(nr){

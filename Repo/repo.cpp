@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <vector>
 #include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -58,13 +59,13 @@ int Repo_Offer_memory::find_pos(const string& name) {
         if(offer.get_name() == name)
             return pos;
         pos++;
-    } }
+    } return -1;}
 
 void Repo_Offer_memory::repo_export(string &filename) {
     vector<Offer> offers = getAllWishlist();
     ofstream out(filename, ios::trunc);
     for (const auto& offer:offers) {
-        out << offer.get_name() << " " << offer.get_destination() << " " << offer.get_type() << " " << offer.get_price() << endl;
+        out << offer.get_name() << "," << offer.get_destination() << "," << offer.get_type() << "," << offer.get_price() << endl;
     }
     out.close();
 }
@@ -74,39 +75,52 @@ void Repo_Offer_memory::replace(vector<Offer> offers)
     all = offers;
 }
 
+void Repo_Offer_memory::add_all_to_wishlist() {
+    wishlist=all;
+}
+
 ostream& operator<<(ostream& out, const RepoException& ex){
     out<<ex.msg;
     return out;
 }
 
-void Repo_Offer_file::load_from_file(string &file) {
-    Repo_Offer_memory::clear_all();
-    std::ifstream in(file);
-    while(!in.eof())
+void Repo_Offer_file::load_from_file(string &file_input,const string& type_of_load) {
+    if(type_of_load == "normal")
+        Repo_Offer_memory::clear_all();
+    if(type_of_load == "wishlist")
+        Repo_Offer_memory::clear();
+    std::ifstream in(file_input);
+    string line;
+    while(getline(in,line))
     {
-        string name;
-        in >> name;
-        string destination;
-        in >> destination;
-        string type;
-        in >> type;
-        string price;
-        in >> price;
-        if(!name.empty() and !destination.empty() and !type.empty() and !price.empty())
-        {
-            Offer o{name, destination, type, price};
+        vector<string>str;
+        stringstream ss(line);
+        string cell;
+
+        while(getline(ss,cell,','))
+            str.push_back(cell);
+
+        string name=str[0];
+        string destination=str[1];
+        string type=str[2];
+        string price=str[3];
+
+        Offer o{name, destination, type, price};
+        if(type_of_load == "normal")
             Repo_Offer_memory::add(o);
-        }
+        if(type_of_load == "wishlist")
+            Repo_Offer_memory::add_wishlist(o);
     }
     in.close();
 }
 
-void Repo_Offer_file::save_to_file(string &file) {
-    ofstream out(file, ios::trunc);
+void Repo_Offer_file::save_to_file(string &file_output) {
+    ofstream out(file_output, ios::trunc);
     for (const auto& offer:Repo_Offer_memory::getAll()) {
         if(!offer.get_name().empty())
-            out << offer.get_name() << " " << offer.get_destination() << " " << offer.get_type() << " " << offer.get_price() << endl;
+            out << offer.get_name() << "," << offer.get_destination() << "," << offer.get_type() << "," << offer.get_price() << endl;
     }
     Repo_Offer_memory::clear_all();
     out.close();
 }
+
