@@ -1,4 +1,4 @@
-# Agentie_de_turism
+# Agentie_de_turism (academic project)
 
 ## Introduction
 * App developed in C++ that manages travel offers for a travel agency. For front-end I used the Qt framework.
