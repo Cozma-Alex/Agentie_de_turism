@@ -2,6 +2,7 @@
 
 #include "..//Repo/repo.h"
 #include "..//Validator/validate.h"
+#include "observer.h"
 #include "undo.h"
 #include <string>
 #include <utility>
@@ -13,7 +14,7 @@
 
 using namespace std;
 
-class ServiceOffer{
+class ServiceOffer:public Wishlist_obs{
     Repo_Offer* repo;
     vector<unique_ptr<ActionUndo>> UndoActions;
 public:
@@ -26,7 +27,7 @@ public:
     vector<Offer> getAllWishlist() noexcept{
         return repo->getAllWishlist();
     }
-    
+
     /// preia parametrii din ui si ii trimite sub forma de Offer in repo pentru adaugare
     /// \param name const string& - titlul noii activitati
     /// \param destinationi const string& - descrierea noii activitati

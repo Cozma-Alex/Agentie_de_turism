@@ -1,6 +1,5 @@
 #include <QApplication>
 #include <QPushButton>
-#include <QLabel>
 #include "Console/ui.h"
 #include "Tests/tests.h"
 #include "Validator/validate.h"

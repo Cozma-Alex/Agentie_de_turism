@@ -3,6 +3,7 @@
 #include <QVBoxLayout>
 #include <QFormLayout>
 #include <QMessageBox>
+#include <QPushButton>
 #include <iostream>
 
 
@@ -13,6 +14,8 @@ void Offer_ui::initGuiCmps(QWidget *widget) {
     this->main_wishlist_box_layout = new QVBoxLayout();
 
     define_main();
+
+    define_wishlist_buttons();
 
     define_data_layout();
 
@@ -36,11 +39,9 @@ void Offer_ui::initGuiCmps(QWidget *widget) {
 
     this->restart(this->service.getAll());
 
-    vector<Offer> f;
+    this->restart_wishlist(service.getAllWishlist());
 
-    this->restart_wishlist(f);
-
-    this->connect();
+    this->connection();
 
     this->connect_wishlist();
 }
@@ -48,7 +49,9 @@ void Offer_ui::initGuiCmps(QWidget *widget) {
 void Offer_ui::define_main() {
     this->page1 = new QWidget();
     this->offers = new QListWidget;
-    this->main_box_layout->addWidget(this->offers);
+    this->main_data_and_wishlist_buttons = new QHBoxLayout;
+    main_data_and_wishlist_buttons->addWidget(this->offers);
+    this->main_box_layout->addLayout(main_data_and_wishlist_buttons);
     h_layout = new QHBoxLayout;
     new_data_layout = new QFormLayout;
     CRUD_layout = new QFormLayout;
@@ -59,16 +62,17 @@ void Offer_ui::define_data_layout() {
     this->destinationEdit = new QLineEdit;
     this->typeEdit = new QLineEdit;
     this->priceEdit = new QLineEdit;
+    this->numberEdit = new QLineEdit;
 
-    this->nameEdit->setFixedHeight(46);
-    this->destinationEdit->setFixedHeight(46);
-    this->typeEdit->setFixedHeight(46);
-    this->priceEdit->setFixedHeight(46);
+    this->nameEdit->setFixedHeight(45);
+    this->destinationEdit->setFixedHeight(45);
+    this->typeEdit->setFixedHeight(45);
+    this->priceEdit->setFixedHeight(45);
 
-    this->nameEdit->setFixedWidth(270);
-    this->destinationEdit->setFixedWidth(270);
-    this->typeEdit->setFixedWidth(270);
-    this->priceEdit->setFixedWidth(270);
+    this->nameEdit->setFixedWidth(310);
+    this->destinationEdit->setFixedWidth(310);
+    this->typeEdit->setFixedWidth(310);
+    this->priceEdit->setFixedWidth(310);
 
     new_data_layout->setVerticalSpacing(30);
     new_data_layout->setHorizontalSpacing(30);
@@ -76,6 +80,11 @@ void Offer_ui::define_data_layout() {
     new_data_layout->addRow(QString("Destination"), this->destinationEdit);
     new_data_layout->addRow(QString("Type"), this->typeEdit);
     new_data_layout->addRow(QString("Price"), this->priceEdit);
+
+    numberEdit = new QLineEdit;
+    numberEdit->setPlaceholderText("How many offers to wishlist");
+    numberEdit->setFixedSize(310,40);
+    new_data_layout->addRow(QString("Number"),numberEdit);
 
     h_layout->addLayout(new_data_layout);
 }
@@ -163,6 +172,36 @@ void Offer_ui::define_sort_layout() {
     h_layout->addLayout(sort_layout);
 }
 
+void Offer_ui::define_wishlist_buttons() {
+
+    h_wishlist_buttons = new QFormLayout;
+    add_wishlist_button_main = new QPushButton("Add to wishlist");
+    generate_wishlist_button_main = new QPushButton("Generate wishlist");
+    clear_wishlist_button_main = new QPushButton("Clear wishlist");
+    read_only_wishlist = new QPushButton("Open a read only Wishlist",this);
+    generate_and_clear_wishlist = new QPushButton("Open an editable Wishlist",this);
+
+    this->add_wishlist_button_main->setStyleSheet(QString("background-color: rgb(51, 19, 19);"));
+    this->generate_wishlist_button_main->setStyleSheet(QString("background-color: rgb(51, 19, 19);"));
+    this->clear_wishlist_button_main->setStyleSheet(QString("background-color: rgb(51, 19, 19);"));
+    this->read_only_wishlist->setStyleSheet(QString("background-color: rgb(81, 19, 19);"));
+    this->generate_and_clear_wishlist->setStyleSheet(QString("background-color: rgb(81, 19, 19);"));
+
+    h_wishlist_buttons->addWidget(add_wishlist_button_main);
+    h_wishlist_buttons->addWidget(generate_wishlist_button_main);
+    h_wishlist_buttons->addWidget(clear_wishlist_button_main);
+    h_wishlist_buttons->addWidget(read_only_wishlist);
+    h_wishlist_buttons->addWidget(generate_and_clear_wishlist);
+    main_data_and_wishlist_buttons->addLayout(h_wishlist_buttons);
+
+    add_wishlist_button_main->setFixedSize(285,70);
+    generate_wishlist_button_main->setFixedSize(285,70);
+    clear_wishlist_button_main->setFixedSize(285,70);
+    read_only_wishlist->setFixedSize(285,70);
+    generate_and_clear_wishlist->setFixedSize(285, 70);
+}
+
+
 void Offer_ui::restart(vector<Offer> elems) {
     this->elements = elems;
     this->offers->clear();
@@ -179,59 +218,59 @@ void Offer_ui::define_tabs() {
     tab_widget = new QTabWidget();
     tab_widget->addTab(page1,"Offers");
     tab_widget->addTab(page2,"Wishlist");
-    tab_widget->resize(1400,800);
+    tab_widget->resize(1300,785);
 
     tab_widget->show();
 }
 
-void Offer_ui::connect() {
+void Offer_ui::connection() {
 
     QObject::connect(this->offers,
                      &QListWidget::itemSelectionChanged,
                      [this](){
-                     int i = this->selec_index();
-                     if(i >= elements.size())
-                         return;
-                     auto elem = this->elements.at(i);
-                     this->nameEdit->setText(QString::fromStdString(elem.get_name()));
-                     this->destinationEdit->setText(QString::fromStdString(elem.get_destination()));
-                     this->typeEdit->setText(QString::fromStdString(elem.get_type()));
-                     this->priceEdit->setText(QString::fromStdString(elem.get_price()));
-    });
+                         int i = this->selec_index();
+                         if(i >= elements.size())
+                             return;
+                         auto elem = this->elements.at(i);
+                         this->nameEdit->setText(QString::fromStdString(elem.get_name()));
+                         this->destinationEdit->setText(QString::fromStdString(elem.get_destination()));
+                         this->typeEdit->setText(QString::fromStdString(elem.get_type()));
+                         this->priceEdit->setText(QString::fromStdString(elem.get_price()));
+                     });
 
     QObject::connect(this->add_button,
                      &QPushButton::clicked,
                      [this](){
-                          auto name = this->nameEdit->text().toStdString();
-                          auto destination = this->destinationEdit->text().toStdString();
-                          auto type = this->typeEdit->text().toStdString();
-                          auto price = this->priceEdit->text().toStdString();
+                         auto name = this->nameEdit->text().toStdString();
+                         auto destination = this->destinationEdit->text().toStdString();
+                         auto type = this->typeEdit->text().toStdString();
+                         auto price = this->priceEdit->text().toStdString();
 
-                          if(name.empty() or destination.empty() or type.empty() or price.empty())
-                          {
-                              QMessageBox::warning(this, "Error", "There cannot be empty fields");
-                              return;
-                          }
-                          try{
-                              this->service.add_offer(name, destination, type, price);
-                          }
-                          catch (const RepoException &ex){
-                              QMessageBox::critical(this,"Error",QString::fromStdString(ex.get_msg()));
-                              this->restart(this->service.getAll());
-                              return;
-                          }
-                          catch (const Validation &ex) {
-                              QMessageBox::critical(this,"Error",QString::fromStdString(ex.get_msg()));
-                              this->restart(this->service.getAll());
-                              return;
-                          }
-                          this->restart(this->service.getAll());
+                         if(name.empty() or destination.empty() or type.empty() or price.empty())
+                         {
+                             QMessageBox::warning(this, "Error", "There cannot be empty fields");
+                             return;
+                         }
+                         try{
+                             this->service.add_offer(name, destination, type, price);
+                         }
+                         catch (const RepoException &ex){
+                             QMessageBox::critical(this,"Error",QString::fromStdString(ex.get_msg()));
+                             this->restart(this->service.getAll());
+                             return;
+                         }
+                         catch (const Validation &ex) {
+                             QMessageBox::critical(this,"Error",QString::fromStdString(ex.get_msg()));
+                             this->restart(this->service.getAll());
+                             return;
+                         }
+                         this->restart(this->service.getAll());
 
                          this->nameEdit->clear();
                          this->destinationEdit->clear();
                          this->typeEdit->clear();
                          this->priceEdit->clear();
-    });
+                     });
 
     QObject::connect(this->update_button,
                      &QPushButton::clicked,
@@ -328,6 +367,7 @@ void Offer_ui::connect() {
                 }
                 catch (const RepoException &ex) {
                     QMessageBox::warning(this,"Error",QString::fromStdString(ex.get_msg()));
+                    return;
                 }
                 this->restart(this->service.getAll());
 
@@ -336,29 +376,30 @@ void Offer_ui::connect() {
                 this->typeEdit->clear();
                 this->priceEdit->clear();
             }
-            );
+    );
 
     QObject::connect(this->destination_filter_button,
-                    &QPushButton::clicked,
-                    [this](){
-                    auto name = this->destinationEdit->text().toStdString();
-                    if(name.empty())
-                    {
-                        QMessageBox::warning(this, "Error", "There cannot be empty fields");
-                        return ;
-                    }
-                    auto the_offers = service.filter_by_destination(name);
-                    if(the_offers.empty())
-                    {
-                        QMessageBox::warning(this,"Error","There are no offers");
-                    }
-                    this->restart(the_offers);
+                     &QPushButton::clicked,
+                     [this](){
+                         auto name = this->destinationEdit->text().toStdString();
+                         if(name.empty())
+                         {
+                             QMessageBox::warning(this, "Error", "There cannot be empty fields");
+                             return ;
+                         }
+                         auto the_offers = service.filter_by_destination(name);
+                         if(the_offers.empty())
+                         {
+                             QMessageBox::warning(this,"Error","There are no offers");
+                             return;
+                         }
+                         this->restart(the_offers);
 
-                    this->nameEdit->clear();
-                    this->destinationEdit->clear();
-                    this->typeEdit->clear();
-                    this->priceEdit->clear();
-    });
+                         this->nameEdit->clear();
+                         this->destinationEdit->clear();
+                         this->typeEdit->clear();
+                         this->priceEdit->clear();
+                     });
 
     QObject::connect(this->price_filter_button,
                      &QPushButton::clicked,
@@ -373,6 +414,7 @@ void Offer_ui::connect() {
                          if(the_offers.empty())
                          {
                              QMessageBox::warning(this,"Error","There are no offers");
+                             return;
                          }
                          this->restart(the_offers);
 
@@ -384,9 +426,14 @@ void Offer_ui::connect() {
 
     QObject::connect(this->remove_all_filters_button,
                      &QPushButton::clicked,
-                    [this](){
-                    this->restart(service.getAll());
-    });
+                     [this](){
+                         this->restart(service.getAll());
+
+                         this->nameEdit->clear();
+                         this->destinationEdit->clear();
+                         this->typeEdit->clear();
+                         this->priceEdit->clear();
+                     });
 
     QObject::connect(this->sort_by_name_button,
                      &QPushButton::clicked,
@@ -422,6 +469,111 @@ void Offer_ui::connect() {
                          this->destinationEdit->clear();
                          this->typeEdit->clear();
                          this->priceEdit->clear();
+                     });
+
+    QObject::connect(this->add_wishlist_button_main,
+                     &QPushButton::clicked,
+                     [this](){
+                         auto name = nameEdit->text().toStdString();
+                         if(name.empty())
+                         {
+                             QMessageBox::warning(this,"Error","Name field is empty");
+                             return ;
+                         }
+                         try {
+                             this->service.add_to_wishlist(name);
+                         }
+                         catch (const RepoException &ex) {
+                             QMessageBox::warning(this,"Error",QString::fromStdString(ex.get_msg()));
+                             return ;
+                         }
+                         this->restart_wishlist(this->service.getAllWishlist());
+
+                         this->nameEdit->clear();
+                         this->destinationEdit->clear();
+                         this->typeEdit->clear();
+                         this->priceEdit->clear();
+                     });
+    QObject::connect(this->generate_wishlist_button_main,
+                     &QPushButton::clicked,
+                     [this](){
+                         auto nr =(this->numberEdit->text().toStdString());
+                         if(nr.empty())
+                         {
+                             QMessageBox::warning(this, "Error", "There cannot be empty fields");
+                             this->nameEdit->clear();
+                             this->destinationEdit->clear();
+                             this->typeEdit->clear();
+                             this->priceEdit->clear();
+                             this->numberEdit->clear();
+                             return;
+                         }
+                         int number;
+                         try{
+                             number = stoi(nr);}
+                         catch (const std::exception& e) {
+                             QMessageBox::warning(this, "Error", "There needs to be a number in the field");
+                             this->nameEdit->clear();
+                             this->destinationEdit->clear();
+                             this->typeEdit->clear();
+                             this->priceEdit->clear();
+                             this->numberEdit->clear();
+                             return;
+                         }
+                         if(number < 1)
+                         {
+                             QMessageBox::warning(this, "Error", "An empty wishlist cannot be generated");
+                             this->nameEdit->clear();
+                             this->destinationEdit->clear();
+                             this->typeEdit->clear();
+                             this->priceEdit->clear();
+                             this->numberEdit->clear();
+                             return;
+                         }
+
+                         if(number > 25)
+                         {
+                             QMessageBox::warning(this,"Error","You cannot add more than 25 offers to your wishlist");
+                             this->nameEdit->clear();
+                             this->destinationEdit->clear();
+                             this->typeEdit->clear();
+                             this->priceEdit->clear();
+                             this->numberEdit->clear();
+                             return;
+                         }
+
+                         this->service.generate_wishlist(number);
+
+                         this->restart_wishlist(this->service.getAllWishlist());
+
+                         this->nameEdit->clear();
+                         this->destinationEdit->clear();
+                         this->typeEdit->clear();
+                         this->priceEdit->clear();
+                         this->numberEdit->clear();
+                     });
+
+    QObject::connect(this->clear_wishlist_button_main,
+                     &QPushButton::clicked,
+                     [this](){
+
+                         this->service.clear_wishlist();
+
+                         this->restart_wishlist(this->service.getAllWishlist());
+
+                         this->nameEdit->clear();
+                         this->destinationEdit->clear();
+                         this->typeEdit->clear();
+                         this->priceEdit->clear();
+                         this->numberEdit->clear();
+                     });
+
+    connect(read_only_wishlist, &QPushButton::clicked, this, &Offer_ui::read_only_wishlist_window);
+
+    QObject::connect(generate_and_clear_wishlist,
+                     &QPushButton::clicked,
+                     [this](){
+                         generate_and_clear_wishlist_window();
                      });
 
 }
@@ -522,7 +674,13 @@ void Offer_ui::connect_wishlist() {
                              QMessageBox::warning(this, "Error", "There cannot be empty fields");
                              return;
                          }
-                         this->service.add_to_wishlist(name);
+                         try {
+                             this->service.add_to_wishlist(name);
+                         }
+                         catch (const RepoException &ex) {
+                             QMessageBox::warning(this,"Error",QString::fromStdString(ex.get_msg()));
+                             return;
+                         }
 
                          this->restart_wishlist(this->service.getAllWishlist());
 
@@ -532,41 +690,67 @@ void Offer_ui::connect_wishlist() {
                      });
 
     QObject::connect(this->generate_wishlist_button,
-                        &QPushButton::clicked,
-                        [this](){
-                            auto nr =(this->offer_number->text().toStdString());
-                            if(nr.empty())
-                            {
-                                QMessageBox::warning(this, "Error", "There cannot be empty fields");
-                                return;
-                            }
-                            auto number = stoi(nr);
-                            if(number < 1)
-                            {
-                                QMessageBox::warning(this, "Error", "An empty wishlist cannot be generated");
-                                return;
-                            }
-                            this->service.generate_wishlist(number);
+                     &QPushButton::clicked,
+                     [this](){
+                         auto nr =(this->offer_number->text().toStdString());
+                         if(nr.empty())
+                         {
+                             QMessageBox::warning(this, "Error", "There cannot be empty fields");
+                             this->name_wishlist_edit->clear();
+                             this->offer_number->clear();
+                             this->export_file->clear();
+                             return;
+                         }
+                         int number;
+                         try{
+                             number = stoi(nr);
+                         }
+                         catch (const std::exception& e) {
+                             QMessageBox::warning(this, "Error", "There needs to be a number in the field");
+                             this->name_wishlist_edit->clear();
+                             this->offer_number->clear();
+                             this->export_file->clear();
+                             return;
+                         }
+                         if(number < 1)
+                         {
+                             QMessageBox::warning(this, "Error", "An empty wishlist cannot be generated");
+                             this->name_wishlist_edit->clear();
+                             this->offer_number->clear();
+                             this->export_file->clear();
+                             return;
+                         }
 
-                            this->restart_wishlist(this->service.getAllWishlist());
+                         if(number > 25)
+                         {
+                             QMessageBox::warning(this,"Error","You cannot add more than 25 offers to your wishlist");
+                             this->name_wishlist_edit->clear();
+                             this->offer_number->clear();
+                             this->export_file->clear();
+                             return;
+                         }
 
-                            this->name_wishlist_edit->clear();
-                            this->offer_number->clear();
-                            this->export_file->clear();
-    });
+                         this->service.generate_wishlist(number);
+
+                         this->restart_wishlist(this->service.getAllWishlist());
+
+                         this->name_wishlist_edit->clear();
+                         this->offer_number->clear();
+                         this->export_file->clear();
+                     });
 
     QObject::connect(this->clear_wishlist_button,
-            &QPushButton::clicked,
-            [this](){
+                     &QPushButton::clicked,
+                     [this](){
 
-                this->service.clear_wishlist();
+                         this->service.clear_wishlist();
 
-                this->restart_wishlist(this->service.getAllWishlist());
+                         this->restart_wishlist(this->service.getAllWishlist());
 
-                this->name_wishlist_edit->clear();
-                this->offer_number->clear();
-                this->export_file->clear();
-    });
+                         this->name_wishlist_edit->clear();
+                         this->offer_number->clear();
+                         this->export_file->clear();
+                     });
 
     QObject::connect(this->export_wishlist_button,
                      &QPushButton::clicked,

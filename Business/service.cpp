@@ -94,27 +94,31 @@ bool ServiceOffer::cmp_type_and_price(const Offer& a, const Offer& b)
 
 void ServiceOffer::clear_wishlist() {
     repo->clear();
+    notify();
 }
 
 void ServiceOffer::add_to_wishlist(const string &name) {
     Offer o = find_offer(name);
     repo->add_wishlist(o);
+    notify();
 }
 
 void ServiceOffer::generate_wishlist(int nr) {
     repo->clear();
     vector<Offer> offers = getAll();
     if(nr>offers.size())
-    {
-        repo->add_all_to_wishlist();
-        nr-=offers.size();
-    }
+        for(int i=1;i<nr;i+=offers.size())
+        {
+            repo->add_all_to_wishlist();
+            nr-=offers.size();
+        }
     auto seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::shuffle(offers.begin(), offers.end(), std::default_random_engine(seed));
     while(nr){
         repo->add_wishlist(offers[offers.size() - nr]);
         nr--;
     }
+    notify();
 }
 
 map<string, vector<Offer>> ServiceOffer::generate_report() {

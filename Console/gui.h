@@ -7,14 +7,17 @@
 #include <QLineEdit>
 #include <QTextEdit>
 #include "..//Business/service.h"
+#include "wishlists.h"
 #include <map>
 #include <QFormLayout>
 #include <QTableWidget>
+#include <QLabel>
+#include "QDialog"
 
 using namespace std;
 
-class Offer_ui: public QWidget{
-Q_OBJECT
+class Offer_ui:public QWidget, public Observer{
+
     ServiceOffer &service;
 
     QListWidget *offers;
@@ -27,8 +30,10 @@ Q_OBJECT
     QTabWidget *tab_widget;
 
     QVBoxLayout *main_box_layout;
+    QHBoxLayout *main_data_and_wishlist_buttons;
     QHBoxLayout *h_layout;
 
+    QFormLayout *h_wishlist_buttons;
     QFormLayout *new_data_layout;
     QFormLayout *CRUD_layout;
     QFormLayout *filters_layout;
@@ -38,6 +43,7 @@ Q_OBJECT
     QLineEdit *destinationEdit;
     QLineEdit *typeEdit;
     QLineEdit *priceEdit;
+    QLineEdit *numberEdit;
 
     QPushButton *add_button;
     QPushButton *update_button;
@@ -52,6 +58,12 @@ Q_OBJECT
     QPushButton *sort_by_name_button;
     QPushButton *sort_by_destination_button;
     QPushButton *sort_by_type_and_price_button;
+
+    QPushButton *add_wishlist_button_main;
+    QPushButton *generate_wishlist_button_main;
+    QPushButton *clear_wishlist_button_main;
+    QPushButton *read_only_wishlist;
+    QPushButton *generate_and_clear_wishlist;
 
     // WISHLIST
 
@@ -76,7 +88,7 @@ Q_OBJECT
 
     void restart(vector<Offer> offer);
 
-    void connect();
+    void connection();
 
     int selec_index();
 
@@ -92,6 +104,8 @@ Q_OBJECT
 
     void define_sort_layout();
 
+    void define_wishlist_buttons();
+
     void define_tabs();
 
     void define_main_wishlist();
@@ -106,8 +120,28 @@ Q_OBJECT
 
     void table_wishlist_define();
 
+private slots:
+    void read_only_wishlist_window(){
+        auto read_only = new Read_only_wishlist{service};
+        read_only->show();
+    }
+
+    void generate_and_clear_wishlist_window(){
+        auto gen_clear = new Generare_and_Clear_wishlist{service};
+        gen_clear->show();
+    }
+
 public:
     Offer_ui(ServiceOffer &serv) : service{serv}{
+        service.register_observer(this);
         initGuiCmps(this);
+    }
+
+    void update(){
+        this->restart_wishlist(service.getAllWishlist());
+    }
+
+    ~Offer_ui(){
+        service.unregister_observer(this);
     }
 };
