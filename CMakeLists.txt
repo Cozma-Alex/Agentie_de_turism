@@ -26,7 +26,7 @@ add_executable(lab11
         Tests/tests.h
         Validator/validate.cpp
         Validator/validate.h
-        main.cpp Console/gui.h Console/gui.cpp)
+        main.cpp Console/gui.h Console/gui.cpp Business/observer.h Console/wishlists.h)
 
 target_link_libraries(lab11
         Qt::Core
