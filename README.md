@@ -6,7 +6,7 @@
 
 ## Functionalities
 * An offer consits of name, destination, type and price.
-* 1st tab functionalities
+* 1st tab functionalities:
 1. Add an offer
 2. Remove an offer
 3. Update an offer(the name cannot be changed)
@@ -18,11 +18,25 @@
 9. Sort by name
 10. Sort by destination
 11. Sort by type and price
+12. Add to wishlist
+13. Generate wishlist
+14. Clear wishlist
+15. Open a read only wishlist
+16. Open an editable wishlist
 * 2nd tab functionalities
-1. Add to wishlist
-2. Generate wishlist
-3. Clear wishlist
-4. Export wishlist
+17. Add to wishlist
+18. Generate wishlist
+19. Clear wishlist
+20. Export wishlist
+* Read only window
+
+Has as many triangles as items in wishlist.
+The number of triangles is refreshed every time the number of elements in the wishlist changes.
+
+
+* Generate and Clear window
+
+Shows all elements that are in the wishlist and has 2 buttons: one for clearing the contents of the wishlist one for generating a new wishlist.
 
 ## Use
 * After execution the graphic interface lets you use all functionalities.
