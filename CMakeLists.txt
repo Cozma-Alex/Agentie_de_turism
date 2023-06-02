@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(lab11)
+project(Agentie_de_turism)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_AUTOMOC ON)
@@ -13,7 +13,7 @@ find_package(Qt6 COMPONENTS
         Widgets
         REQUIRED)
 
-add_executable(lab11
+add_executable(Agentie_de_turism
         Business/service.cpp
         Business/service.h
         Business/undo.h
@@ -28,7 +28,7 @@ add_executable(lab11
         Validator/validate.h
         main.cpp Console/gui.h Console/gui.cpp Business/observer.h Console/wishlists.h)
 
-target_link_libraries(lab11
+target_link_libraries(Agentie_de_turism
         Qt::Core
         Qt::Gui
         Qt::Widgets
